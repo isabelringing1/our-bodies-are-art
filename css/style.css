@@ -1,0 +1,32 @@
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#main-container{
+    margin-top: 10vh;
+    width: 600px;
+    height: 600px;
+    border: 1px solid black;
+    border-radius: 3px;
+    text-align: center;
+}
+
+#capture{
+    margin-top: 50px;
+}
+
+#toggle-frame{
+    margin-left: -430px;
+    margin-top: 10px;
+}
+
+button{
+    padding: 10px;
+    background-color: lightskyblue;
+    border-radius: 10px;
+    font-size: 20px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
