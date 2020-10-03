@@ -1,8 +1,8 @@
 
 videoWidth = 600;
 videoHeight = 600;
-minPartConfidence = .2;
-minPoseConfidence = .2;
+minPartConfidence = 0.2;
+minPoseConfidence = 0.2;
 navigator.getUserMedia = navigator.getUserMedia ||
     navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
