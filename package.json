@@ -12,5 +12,8 @@
     "url": "https://git.yale.edu/ijl4/senior_project.git"
   },
   "author": "Isabel Lee",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
