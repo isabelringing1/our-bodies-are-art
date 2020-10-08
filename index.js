@@ -3,6 +3,8 @@ var path = require("path");
 
 const app = express();
 
+process.env.WEBGL_CPU_FORWARD = 'false';
+
 app.use(express.static(__dirname + "/"));
 
 app.get('/', (req, res) => {
