@@ -1,5 +1,10 @@
 canvas{
+    position: absolute;
+    z-index: 1;
+}
 
+.artwork{
+    position: absolute;
 }
 
 .container{
@@ -11,4 +16,5 @@ canvas{
     justify-content: center;
     flex-direction: column;
     text-align: center;
+    position: relative;
 }

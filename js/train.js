@@ -4,7 +4,20 @@ var userToken = '';
 var images = [];
 
 async function setup(){
-    //const net = await getPosenet();
+    document.getElementById('color-checkbox').addEventListener('change', function(){
+        canvases = document.getElementsByClassName('canvas'); 
+        console.log(canvases);
+        if(this.checked) {
+            for (c in canvases){
+                canvases[c].style.display = 'inline';
+            }
+        } else {
+            for (c in canvases){
+                canvases[c].style.display = 'none';
+            }
+        }
+    });
+    
     const net = await bodyPix.load();
     if (!sessionStorage.getItem('userToken')){ 
         userToken = prompt("Please enter the generated developer token.");
@@ -44,7 +57,7 @@ function getImage(id, net){
         error: function(xhr, status, error) { 
             console.log(xhr);
          }
-    })
+    });
 }
 
 function processImages(raw_images, net){
@@ -58,9 +71,10 @@ function create_image(data, net){
     div.className = "container";
     var img = document.createElement('img'); 
     img.style.height = '50vh';
+    div.style.height = img.style.height;
     img.addEventListener("load", function () {
         labelImage(img, div, net);
-    });          
+    });
     var url = window.URL || window.webkitURL;
     img.src = url.createObjectURL(data);
     img.className = "artwork";
@@ -71,13 +85,13 @@ function create_image(data, net){
 }
 
 async function labelImage(img, div, net){
-    console.log("labeling: " + img);
+    console.log(img);
     var canvas = document.createElement('canvas');
-    canvas.width = img.style.width;
-    canvas.height = img.style.height;
-    var ctx = canvas.getContext('2d');
-    
-   
+    canvas.width = img.width;
+    canvas.height = img.height;
+    canvas.className = 'canvas';
+    console.log(canvas);
+    div.appendChild(canvas);
     const segmentation = await net.segmentPersonParts(img, {
         flipHorizontal: false,
         internalResolution: 'medium',
@@ -91,13 +105,13 @@ async function labelImage(img, div, net){
     const opacity = 0.7;
     const flipHorizontal = false;
     const maskBlurAmount = 0;
-    // Draw the colored part image on top of the original image onto a canvas.
-    // The colored part image will be drawn semi-transparent, with an opacity of
-    // 0.7, allowing for the original image to be visible under.
+    var blank = document.createElement('img'); 
+    blank.height = coloredPartImage.height;
+    blank.width = coloredPartImage.width;
     bodyPix.drawMask(
-        canvas, img, coloredPartImage, opacity, maskBlurAmount,
+        canvas, blank, coloredPartImage, opacity, maskBlurAmount,
         flipHorizontal);
-    div.appendChild(canvas);
+    
     /*const pose = await net.estimateSinglePose(img, {
         flipHorizontal: false
     });
