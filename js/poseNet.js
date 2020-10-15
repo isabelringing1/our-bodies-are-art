@@ -1,5 +1,27 @@
-minPartConfidence = 0.2;
-minPoseConfidence = 0.2;
+minPartConfidence = 0.0;
+minPoseConfidence = 0.0;
+
+bodyParts = new Map([
+    ["nose", 0],
+    ["leftEye", 1],
+    ["rightEye", 2],
+    ["leftEar", 3],
+    ["rightEar", 4],
+    ["leftShoulder", 5],
+    ["rightShoulder", 6],
+    ["leftElbow", 7],
+    ["rightElbow", 8],
+    ["leftWrist", 9],
+    ["rightWrist", 10],
+    ["leftHip", 11],
+    ["rightHip", 12],
+    ["leftKnee", 13],
+    ["rightKnee", 14],
+    ["leftAnkle", 15],
+    ["rightAnkle", 16]
+]);
+
+connections = [[5, 6], [5, 11], [6, 12], [11,12], [6, 8], [8, 10], [5, 7], [7, 9], [11, 13], [13, 15], [12, 14], [14, 16]];
 
 function getPosenet(){
     return posenet.load({
@@ -11,15 +33,39 @@ function getPosenet(){
 }
 
 function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
+    vertices = new Map()
     for (let i = 0; i < keypoints.length; i++) {
         const keypoint = keypoints[i];
 
         if (keypoint.score < minConfidence) {
-        continue;
+            continue;
         }
 
-        const {y, x} = keypoint.position;
+        const {y, x} = keypoint.position;        
         drawPoint(ctx, y * scale, x * scale, 3, "aqua");
+        //how we will reference our vertex in future uses; point on canvas and index
+        vertices.set(parseInt(y * scale) + "," + parseInt(x * scale), i);
+        
+    }
+    console.log(vertices)
+    return vertices;
+}
+
+function drawKPfromVertices(vertices, ctx, scale = 1){
+    for (let i = 0; i < vertices.length; i++){
+        var pts = vertices[i].split(",");
+        let y = pts[0]
+        let x = pts[1]
+        drawPoint(ctx, y * scale, x * scale, 3, "aqua");
+    }
+}
+
+function drawSKfromVertices(vertices, ctx, scale=1){
+    console.log(vertices)
+    for (let i = 0; i < connections.length; i++){
+        var part1 = vertices[connections[i][0]].split(",");
+        var part2 = vertices[connections[i][1]].split(",");
+        drawSegment([part1[0], part1[1]], [part2[0], part2[1]], "aqua", scale, ctx)
     }
 }
 
@@ -30,7 +76,7 @@ function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
     function toTuple({y, x}) {
       return [y, x];
     }
-  
+    console.log(adjacentKeyPoints)
     adjacentKeyPoints.forEach((keypoints) => {
       drawSegment(
           toTuple(keypoints[0].position), toTuple(keypoints[1].position), "aqua",

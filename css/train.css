@@ -1,6 +1,13 @@
+body{
+    margin: 0px;
+}
 canvas{
     position: absolute;
     z-index: 1;
+}
+
+.pose-canvas{
+    z-index:2;
 }
 
 .artwork{

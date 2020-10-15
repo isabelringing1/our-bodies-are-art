@@ -2,22 +2,17 @@ document.addEventListener('DOMContentLoaded', setup);
 
 var userToken = '';
 var images = [];
+var all_vertices = new Map();
+var clickedPt = "";
 
 async function setup(){
     document.getElementById('color-checkbox').addEventListener('change', function(){
-        canvases = document.getElementsByClassName('canvas'); 
-        console.log(canvases);
         if(this.checked) {
-            for (c in canvases){
-                canvases[c].style.display = 'inline';
-            }
+            $('.canvas').css('display', 'inline');
         } else {
-            for (c in canvases){
-                canvases[c].style.display = 'none';
-            }
+            $('.canvas').css('display', 'none');
         }
     });
-    
     const net = await bodyPix.load();
     if (!sessionStorage.getItem('userToken')){ 
         userToken = prompt("Please enter the generated developer token.");
@@ -64,13 +59,14 @@ function processImages(raw_images, net){
     for (i in raw_images){
         getImage(raw_images[i].id, net);
     }
+    
 }
 
 function create_image(data, net){
     var div = document.createElement('div');
     div.className = "container";
     var img = document.createElement('img'); 
-    img.style.height = '50vh';
+    img.style.height = '80vh';
     div.style.height = img.style.height;
     img.addEventListener("load", function () {
         labelImage(img, div, net);
@@ -84,20 +80,21 @@ function create_image(data, net){
     div.appendChild(img);
 }
 
-async function labelImage(img, div, net){
+async function labelImage(img, div, net, pose){
     console.log(img);
     var canvas = document.createElement('canvas');
     canvas.width = img.width;
     canvas.height = img.height;
     canvas.className = 'canvas';
+    const ctx = canvas.getContext('2d');
     console.log(canvas);
     div.appendChild(canvas);
     const segmentation = await net.segmentPersonParts(img, {
         flipHorizontal: false,
-        internalResolution: 'medium',
-        segmentationThreshold: 0.7
+        internalResolution: 'high',
+        segmentationThreshold: 0.7,
+        maxDetections: 1
     });
-
     const coloredPartImage = bodyPix.toColoredPartMask(segmentation);
     console.log(coloredPartImage);
     img.height = coloredPartImage.height;
@@ -114,11 +111,65 @@ async function labelImage(img, div, net){
     
     /*const pose = await net.estimateSinglePose(img, {
         flipHorizontal: false
-    });
-    console.log(pose);
+    });*/
 
-    if (pose.score >= minPoseConfidence) {
-        drawKeypoints(pose.keypoints, minPartConfidence, ctx);
-        drawSkeleton(pose.keypoints, minPartConfidence, ctx);
-    } */
+    var posecanvas = document.createElement('canvas');
+    posecanvas.width = img.width;
+    posecanvas.height = img.height;
+    posecanvas.className = 'canvas pose-canvas';
+    const posectx = posecanvas.getContext('2d');
+    div.appendChild(posecanvas);
+    const click_handler = (event, posecanvas) => changeImage(event, posecanvas);
+    const move_handler = (event, posecanvas) => dragPoint(event, posecanvas);
+    posecanvas.addEventListener('mousedown', (event) => click_handler(event, posecanvas)); 
+    posecanvas.addEventListener('mousemove', (event) => move_handler(event, posecanvas)); 
+    posecanvas.addEventListener('mouseup', function(){clickedPt="";})
+   
+    poses = segmentation.allPoses;
+    console.log(segmentation)
+    var vertices = drawKeypoints(poses[0].keypoints, minPartConfidence, posectx);
+    drawSkeleton(poses[0].keypoints, minPartConfidence, posectx);
+    all_vertices.set(posecanvas, vertices)
+}
+
+function changeImage(e, canvas){
+    let x = e.pageX - canvas.offsetLeft;
+    let y = e.pageY - canvas.offsetTop;
+    vertices = all_vertices.get(canvas)
+    console.log('clicked ' + y + ', ' + x);
+    var points = [];
+    for (var i = -3; i <  3; i++){
+        for (var j = -3; j <  3; j++){
+            points.push((y + i) + "," + (x + j));
+        }
+    }
+
+    for (var i = 0; i < points.length; i++){
+        if (vertices.has(points[i])){
+            console.log("found " + points[i] + " as " + vertices.get(points[i]));
+            clickedPt = points[i];
+            break;
+        }
+    }
+}
+
+function dragPoint(e, canvas){
+    if (clickedPt == "") return;
+    ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let x = e.pageX - canvas.offsetLeft;
+    let y = e.pageY - canvas.offsetTop;
+    vertices = all_vertices.get(canvas)
+
+    let i = vertices.get(clickedPt)
+    vertices.delete(clickedPt);
+    let newPt = y+","+x
+    vertices.set(newPt, i);
+    clickedPt = newPt;
+    vertices = new Map([...vertices].sort((a, b) => a[1] - b[1]))
+    vertexArray = Array.from(vertices.keys());
+    
+    drawKPfromVertices(vertexArray, ctx);
+    drawSKfromVertices(vertexArray, ctx);
 }
