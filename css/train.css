@@ -18,6 +18,18 @@ canvas{
     margin: 50px;
 }
 
+.send-data{
+    margin-left: -100px;
+}
+
+.delete{
+    margin-left: -150px;
+}
+
+.toggle{
+    float: right;
+}
+
 #main-container{
     display: flex;
     justify-content: center;

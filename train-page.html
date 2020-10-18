@@ -2,7 +2,8 @@
 <html>
     <head>
         <title>Art Bod Training Page</title>
-        <script src="js/poseNet.js"></script>
+        <script src="js/pose.js"></script>
+        <script src="js/sheets.js"></script>
         <script src="js/train.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
@@ -18,6 +19,12 @@
                 <input type="checkbox" id="color-checkbox" name="color-checkbox" value="true" checked>
                 <label for="color-checkbox">Show Colors</label>
             </div>
+            <button id="authorize_button" style="display: none;">Authorize Sheets</button>
         </div>
+
+        <script async defer src="https://apis.google.com/js/api.js"
+            onload="this.onload=function(){};handleClientLoad()"
+            onreadystatechange="if (this.readyState === 'complete') this.onload()">
+        </script>
     </body>
 </html>

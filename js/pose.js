@@ -1,7 +1,8 @@
 minPartConfidence = 0.0;
 minPoseConfidence = 0.0;
 
-bodyParts = new Map([
+// Body part name to index hash map for easy access
+BP = new Map([ 
     ["nose", 0],
     ["leftEye", 1],
     ["rightEye", 2],
@@ -47,7 +48,7 @@ function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
         vertices.set(parseInt(y * scale) + "," + parseInt(x * scale), i);
         
     }
-    console.log(vertices)
+    //console.log(vertices)
     return vertices;
 }
 
@@ -61,7 +62,7 @@ function drawKPfromVertices(vertices, ctx, scale = 1){
 }
 
 function drawSKfromVertices(vertices, ctx, scale=1){
-    console.log(vertices)
+   // console.log(vertices)
     for (let i = 0; i < connections.length; i++){
         var part1 = vertices[connections[i][0]].split(",");
         var part2 = vertices[connections[i][1]].split(",");
@@ -76,7 +77,6 @@ function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
     function toTuple({y, x}) {
       return [y, x];
     }
-    console.log(adjacentKeyPoints)
     adjacentKeyPoints.forEach((keypoints) => {
       drawSegment(
           toTuple(keypoints[0].position), toTuple(keypoints[1].position), "aqua",
