@@ -3,7 +3,10 @@ document.addEventListener('DOMContentLoaded', setup);
 var userToken = '';
 var images = [];
 var all_vertices = new Map();
+var all_colors = new Map();
 var clickedPt = "";
+var paint = NONE;
+const opacity = .6;
 
 async function setup(){
     document.getElementById('color-checkbox').addEventListener('change', function(){
@@ -13,7 +16,7 @@ async function setup(){
             $('.canvas').css('display', 'none');
         }
     });
-    const net = await bodyPix.load();
+    const net = await bodyPix.load({architecture: 'ResNet50'});
     if (!sessionStorage.getItem('userToken')){ 
         userToken = prompt("Please enter the generated developer token.");
         sessionStorage.setItem('userToken', userToken);
@@ -94,11 +97,16 @@ function create_image(data, net, name){
 
 async function labelImage(img, div, net, pose){
     var canvas = document.createElement('canvas');
+    var controls = document.createElement('div')
     canvas.width = img.width;
     canvas.height = img.height;
     canvas.className = 'canvas';
-    canvas.id = "canvas" + img.id;
+    canvas.id = "canvas_" + img.id;
     const ctx = canvas.getContext('2d');
+    controls.className = 'controls';
+    controls.id = "controls_" + img.id;
+    controls.style.marginTop = img.height + 20 + "px";
+
     div.appendChild(canvas);
     const segmentation = await net.segmentPersonParts(img, {
         flipHorizontal: false,
@@ -106,19 +114,23 @@ async function labelImage(img, div, net, pose){
         segmentationThreshold: 0.7,
         maxDetections: 1
     });
-    const coloredPartImage = bodyPix.toColoredPartMask(segmentation);
+    const coloredPartImage = bodyPix.toColoredPartMask(segmentation, partColors);
     img.height = coloredPartImage.height;
     img.width = coloredPartImage.width;
-    const opacity = 0.6;
-    const flipHorizontal = false;
-    const maskBlurAmount = 0;
+    console.log(coloredPartImage)
     var blank = document.createElement('img'); 
     blank.height = coloredPartImage.height;
     blank.width = coloredPartImage.width;
-    bodyPix.drawMask(
-        canvas, blank, coloredPartImage, opacity, maskBlurAmount,
-        flipHorizontal);
-    
+    const c_click_handler = (event, canvas) => startPaint(event, canvas);
+    const c_move_handler = (event, canvas, blank) => paintCanvas(event, canvas, blank);
+    canvas.addEventListener('mousedown', (event) => c_click_handler(event, canvas)); 
+    canvas.addEventListener('mousemove', (event) => c_move_handler(event, canvas, blank)); 
+    canvas.addEventListener('mouseup', function(){paint=NONE;})
+    canvas.addEventListener('mouseout', function(){paint=NONE;})
+    console.log(blank)
+    bodyPix.drawMask(canvas, blank, coloredPartImage, opacity, 0, false);
+    all_colors.set(canvas, coloredPartImage);
+
     var posecanvas = document.createElement('canvas');
     posecanvas.width = img.width;
     posecanvas.height = img.height;
@@ -126,14 +138,15 @@ async function labelImage(img, div, net, pose){
     posecanvas.id = "posecanvas" + img.id;
     const posectx = posecanvas.getContext('2d');
     div.appendChild(posecanvas);
-    const click_handler = (event, posecanvas) => changeImage(event, posecanvas);
-    const move_handler = (event, posecanvas) => dragPoint(event, posecanvas);
-    posecanvas.addEventListener('mousedown', (event) => click_handler(event, posecanvas)); 
-    posecanvas.addEventListener('mousemove', (event) => move_handler(event, posecanvas)); 
+    const p_click_handler = (event, posecanvas) => changeImage(event, posecanvas);
+    const p_move_handler = (event, posecanvas) => dragPoint(event, posecanvas);
+    posecanvas.addEventListener('mousedown', (event) => p_click_handler(event, posecanvas)); 
+    posecanvas.addEventListener('mousemove', (event) => p_move_handler(event, posecanvas)); 
     posecanvas.addEventListener('mouseup', function(){clickedPt="";})
+    posecanvas.addEventListener('mouseout', function(){clickedPt="";})
 
-    create_buttons(div, img, canvas, posecanvas);
-
+    create_buttons(controls, img, canvas, posecanvas);
+    div.appendChild(controls)
     pose = segmentation.allPoses[0];
     var vertices = drawKeypoints(pose.keypoints, minPartConfidence, posectx);
     drawSkeleton(pose.keypoints, minPartConfidence, posectx);
@@ -146,7 +159,7 @@ function create_buttons(div, img, canvas, posecanvas){
     data_button.setAttribute('ID', 'databutton-' + String(img.id));
     data_button.setAttribute('class', 'button send-data');
     data_button.setAttribute('value', 'Send Data');
-    data_button.onclick = function () { send_data(posecanvas); };
+    data_button.onclick = function () { send_data(canvas, posecanvas); };
     div.appendChild(data_button);
 
     var delete_button = document.createElement('input');
@@ -229,10 +242,8 @@ function dragPoint(e, canvas){
     drawSKfromVertices(vertexArray, ctx);
 }
 
-function send_data(canvas){
-    console.log(all_vertices.get(canvas))
-
-    let vertices = all_vertices.get(canvas)
+function send_data(canvas, posecanvas){
+    let vertices = all_vertices.get(posecanvas);
     vertices = new Map([...vertices].sort((a, b) => a[1] - b[1]))
     vertexArray = Array.from(vertices.keys());
 
@@ -245,10 +256,14 @@ function send_data(canvas){
     shRatio = shoulderWidth / hipWidth;
 
     console.log(stRatio, shRatio);
-    var id = canvas.id.slice(-1);
+
+    let colors = all_colors.get(canvas);
+    var hbRatio = gethbRatio(colors.data);
+
+    var id = canvas.id.split("_")[1];
     if (!isNaN(id)) {
         console.log("writing data for image " + id);
-        sendData(id, [stRatio, shRatio]);
+        sendData(id, [stRatio, shRatio, hbRatio]);
     }
 }
 
@@ -256,4 +271,46 @@ function point_dist(a1, a2){
     p1 = [a1.split(",")[0], a1.split(",")[1]]
     p2 = [a2.split(",")[0], a2.split(",")[1]]
     return Math.sqrt(Math.pow(Math.abs(p1[0]-p2[0]), 2) + Math.pow(Math.abs(p1[1]-p2[1]), 2))
+}
+
+function startPaint(e, canvas){
+    color = $('input[name="color"]:checked').val();
+    paint = window[color]
+    console.log("painting");
+}
+
+function paintCanvas(e, canvas, blank){
+    if (paint == NONE) {return;}
+    let x = e.pageX - canvas.offsetLeft;
+    let y = e.pageY - canvas.offsetTop;
+    var colors = all_colors.get(canvas);
+    //console.log('clicked ' + y + ', ' + x);
+    var w, h;
+    for (var i = -10; i < 10; i++){
+        for (var j = -10; j < 10; j++){
+            w = x+i; h = y+j;
+            if (w < 0 || w >= colors.width){w = x;}
+            if (h < 0 || h >= colors.height){h = y;}
+            colors.data[(h * colors.width + w) * 4] = paint[0];
+            colors.data[(h * colors.width + w) * 4 + 1] = paint[1];
+            colors.data[(h * colors.width + w) * 4 + 2] = paint[2];
+            colors.data[(h * colors.width + w) * 4 + 3] = paint[3];
+        }
+    }
+    all_colors.set(canvas, colors);
+    bodyPix.drawMask(canvas, blank, colors, opacity, 0, false);
+}
+
+function gethbRatio(data){
+    var h = 0; var b = 0;
+    for (var i = 0; i < data.length; i+=4){
+        if (data[i] == GREEN[0]){
+            b++;
+        }
+        else if (data[i] == PURPLE[0]){
+            h++;
+        }
+    }
+    if (b==0) {return 0;}
+    return h / b;
 }

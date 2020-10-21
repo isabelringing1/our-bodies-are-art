@@ -1,5 +1,9 @@
 minPartConfidence = 0.0;
 minPoseConfidence = 0.0;
+GREEN = [175, 240, 91, 255]
+PURPLE = [110, 64, 170, 255]
+BG = [255, 255, 255, 255]
+NONE = [0, 0, 0, 0]
 
 // Body part name to index hash map for easy access
 BP = new Map([ 
@@ -22,6 +26,14 @@ BP = new Map([
     ["rightAnkle", 16]
 ]);
 
+var partColors = [
+    PURPLE, PURPLE, GREEN, GREEN,
+    GREEN, GREEN, GREEN, GREEN,
+    GREEN, GREEN, GREEN, GREEN,
+    GREEN, GREEN, GREEN, GREEN,
+    GREEN, GREEN, GREEN, GREEN,
+    GREEN, GREEN, GREEN, GREEN,
+  ];
 connections = [[5, 6], [5, 11], [6, 12], [11,12], [6, 8], [8, 10], [5, 7], [7, 9], [11, 13], [13, 15], [12, 14], [14, 16]];
 
 function getPosenet(){

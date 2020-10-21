@@ -27,7 +27,17 @@ canvas{
 }
 
 .toggle{
-    float: right;
+    left: 200px;
+    position: relative;
+}
+
+.controls{
+    display: flex;
+    justify-content: center;
+}
+
+button{
+    width: fit-content;
 }
 
 #main-container{
@@ -36,4 +46,12 @@ canvas{
     flex-direction: column;
     text-align: center;
     position: relative;
+}
+
+#color-menu{
+    width: 200px;
+    height: 200px;
+    position: fixed;
+    padding: 20px;
+    z-index: 3;
 }
