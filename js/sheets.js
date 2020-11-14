@@ -67,12 +67,12 @@ function dumpData() {
 function sendData(id, data){
     var params = {
         spreadsheetId: '1rvqnL7fjsv4vF_mwV4si3RmCJ-SY4bppda1aw6ZlWOM',
-        range: "Sheet1!I" + id + ":K" + id,
+        range: "Sheet1!J" + id + ":L" + id,
         valueInputOption: "RAW",
       };
 
     var valueRangeBody = {
-        "range": "Sheet1!I" + id + ":K" + id,
+        "range": "Sheet1!J" + id + ":L" + id,
         "majorDimension": "COLUMNS",
         "values": [
             [data[0]], [data[1]], [data[2]]
