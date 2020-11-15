@@ -1,4 +1,3 @@
-
 function make_tree(points){
     let queue = [];
     let d = [...points.keys()];
@@ -56,22 +55,52 @@ function separate(points, data, vp){
     else {
         mu = (dists[dists.length/2] + dists[dists.length/2 - 1]) / 2;
     }
-    inside = []
-    outside = []
+    inside = [];
+    outside = [];
     for (var i = 0; i < data.length; i++){
         d = dist(points[data[i]], center);
         if (d < mu){ 
-            inside.push(data[i]) //this should also include center
+            inside.push(data[i]); //this should also include center
         }
         else{
-            outside.push(data[i])
+            outside.push(data[i]);
         }
     }
     return [mu, inside, outside]
 }
 
-function dist(p1, p2){ //must change to multi-dimensional distance
-    return Math.sqrt(Math.pow(p1[0] - p2[0], 2) + Math.pow(p1[1] - p2[1], 2));
+function dist(p1, p2){ 
+    let d = 0;
+    for (i = 0; i < p1.length; i++){ //len of point = dimensions
+        d += Math.pow(p1[i] - p2[i], 2);
+    }
+    return Math.sqrt(d);
+}
+
+//function returns the k closest points from query
+function knn(root, k, query, points){
+    var tau = Number.MAX_SAFE_INTEGER;
+    var search = [root];
+    var closest = new PriorityQueue(k, points.length);
+    while (search.length != 0){
+        node = search.pop();
+        d = dist(points[node.vp], query);
+        if (d < tau){
+            closest.enqueue(node, d);
+            if (closest.isFull()){
+                tau = dist(query, points[closest.first().data.vp]);
+            }
+        }
+        if (d < node.mu + tau && node.data.length > 1){ //need to search inside subtree
+            console.log('pushing left node')
+            search.push(node.left);
+        }
+        if (d >= node.mu - tau && node.data.length > 1){ //need to search outside subtree
+            console.log('pushing right node')
+            search.push(node.right);
+        }
+    }
+    return closest;
 }
 
 function print_tree(root){
@@ -87,5 +116,6 @@ function print_tree(root){
 }
 
 function print_node(node){
-    console.log(node)
+    console.log(node);
 }
+
