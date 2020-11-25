@@ -44,17 +44,18 @@ function handleAuthClick(event) {
     gapi.auth2.getAuthInstance().signIn();
 }
 
-function dumpData() {
+function getData() {
     gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId: '1rvqnL7fjsv4vF_mwV4si3RmCJ-SY4bppda1aw6ZlWOM',
-        range: 'Sheet1!B1:B5',
+        range: 'Sheet1!Q1:S',
     }).then(function(response) {
         var range = response.result;
         if (range.values.length > 0) {
             for (i = 0; i < range.values.length; i++) {
                 var row = range.values[i];
-                console.log(row)
-        }
+                //console.log(row)
+            }
+            set_data(range.values);
         } else {
             console.log('No data found.');
         }

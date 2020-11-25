@@ -1,3 +1,11 @@
+var data = false;
+var datatree = false;
+
+function set_data(points){
+    data = points;
+}
+
+// Points is an array of data arrays, one per piece
 function make_tree(points){
     let queue = [];
     let d = [...points.keys()];
@@ -5,6 +13,7 @@ function make_tree(points){
         data: d, 
         vp: Math.floor(Math.random() * (d.length+1)),
     };
+    root.name = "VP " + root.vp + " (" + root.data.length + ")";
     let sep = separate(points, root.data, root.vp);
     root.mu = sep[0];
     root.inside = sep[1];
@@ -18,6 +27,7 @@ function make_tree(points){
                 data: node.inside,
                 vp: node.inside[Math.floor(Math.random() * node.inside.length)],
             }
+            node.left.name = "VP " + node.left.vp + " (" + node.left.data.length + ")";
             let [l_mu, l_inside, l_outside] = separate(points, node.left.data, node.left.vp);
             node.left.mu = l_mu;
             node.left.inside = l_inside;
@@ -29,6 +39,7 @@ function make_tree(points){
                 data: node.outside,
                 vp: node.outside[Math.floor(Math.random() * node.outside.length)],
             }
+            node.right.name = "VP " + node.right.vp + " (" + node.right.data.length + ")";
             let [r_mu, r_inside, r_outside] = separate(points, node.right.data, node.right.vp);
             node.right.mu = r_mu;
             node.right.inside = r_inside;
@@ -36,6 +47,7 @@ function make_tree(points){
             queue.push(node.right);
         }
     }
+    datatree = root;
     return root;
 }
 

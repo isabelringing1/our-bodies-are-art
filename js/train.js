@@ -7,6 +7,7 @@ var all_colors = new Map();
 var clickedPt = "";
 var paint = NONE;
 const opacity = .6;
+var range = [41, 50]
 
 async function setup(){
     document.getElementById('color-checkbox').addEventListener('change', function(){
@@ -16,7 +17,7 @@ async function setup(){
             $('.canvas').css('display', 'none');
         }
     });
-    const net = await bodyPix.load({architecture: 'ResNet50'});
+    const net = await bodyPix.load({architecture: 'MobileNetV1'});
     if (!sessionStorage.getItem('userToken')){ 
         userToken = prompt("Please enter the generated developer token.");
         sessionStorage.setItem('userToken', userToken);
@@ -69,9 +70,10 @@ function getImage(id, net){
 
 async function processImages(raw_images, net){
     for (i in raw_images){
-        await getImage(raw_images[i].id, net);
+        if (i >= range[0] && i <= range[1]){
+            await getImage(raw_images[i].id, net);
+        }
     }
-    
 }
 
 function create_image(data, net, name){
