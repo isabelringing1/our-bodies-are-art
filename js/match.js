@@ -104,11 +104,9 @@ function knn(root, k, query, points){
             }
         }
         if (d < node.mu + tau && node.data.length > 1){ //need to search inside subtree
-            console.log('pushing left node')
             search.push(node.left);
         }
         if (d >= node.mu - tau && node.data.length > 1){ //need to search outside subtree
-            console.log('pushing right node')
             search.push(node.right);
         }
     }

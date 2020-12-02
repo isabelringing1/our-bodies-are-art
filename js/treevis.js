@@ -44,8 +44,15 @@ document.addEventListener("DOMContentLoaded", function(){
             root.x0 = height / 2;
             root.y0 = 0;
             update(root);
-        }
-            
+            var jsonData = JSON.stringify(datatree, function(key, value){
+                if (key == 'parent'){return value.id;}
+                return value;
+            });
+            var jsonPoints = JSON.stringify(data)
+            console.log("save in json file: ")
+            console.log(jsonData)
+            console.log(jsonPoints)
+        }    
     });
 });
 

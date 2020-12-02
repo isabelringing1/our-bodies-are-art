@@ -2,10 +2,16 @@
 <html>
     <head>
         <title>Art Bod</title>
+        <script src="js/util.js"></script>
         <script src="js/pose.js"></script>
+        <script src="js/pqueue.js"></script>
+        <script src="js/match.js"></script>
         <script src="js/main.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
+        <!-- Load BodyPix -->
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.0"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link rel="stylesheet" typ="text/css" href="css/style.css">
     </head>
 
@@ -13,18 +19,29 @@
         <div id="main-container">
             <div id="webcam">
                 <video id="video" style="display: none;"></video>
-                <canvas id="output" />
+                <canvas id="output"/>
+            </div>
+            <div class="text">
+                <div class="left"> Pressing ‘Start’ will activate a 5 second timer. </div>
+                <div class="right"> Align your whole body in the viewport for best results. </div>
             </div>
         </div>
-
-        <div id="toggle-frame"> 
-            <input type="checkbox" id="frame-checkbox" name="frame-checkbox" value="Show Frame">
-            <label for="frame-checkbox"> Show Pose Skeleton</label>
-        </div>
+        <div id="count"></div> 
+        <div id="pose"> <canvas id="posecanvas"/></div>  
+        <div id="mask"><canvas id="output-mask"/> </div>
 
         <div id="capture"> 
             <button id="capture-button"> 
                 Capture
+            </button>
+            <button id="view-button"> 
+                Turn off video
+            </button>
+            <button id="show-mask" style='display:none'> 
+                Done Adjusting Pose
+            </button>
+            <button id="done" style='display:none'> 
+                Match me
             </button>
         </div>
     </body>

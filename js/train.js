@@ -97,7 +97,7 @@ function create_image(data, net, name){
     });
 }
 
-async function labelImage(img, div, net, pose){
+async function labelImage(img, div, net){
     var canvas = document.createElement('canvas');
     var controls = document.createElement('div')
     canvas.width = img.width;
@@ -129,7 +129,6 @@ async function labelImage(img, div, net, pose){
     canvas.addEventListener('mousemove', (event) => c_move_handler(event, canvas, blank)); 
     canvas.addEventListener('mouseup', function(){paint=NONE;})
     canvas.addEventListener('mouseout', function(){paint=NONE;})
-    console.log(blank)
     bodyPix.drawMask(canvas, blank, coloredPartImage, opacity, 0, false);
     all_colors.set(canvas, coloredPartImage);
 
@@ -269,12 +268,6 @@ function send_data(canvas, posecanvas){
     }
 }
 
-function point_dist(a1, a2){
-    p1 = [a1.split(",")[0], a1.split(",")[1]]
-    p2 = [a2.split(",")[0], a2.split(",")[1]]
-    return Math.sqrt(Math.pow(Math.abs(p1[0]-p2[0]), 2) + Math.pow(Math.abs(p1[1]-p2[1]), 2))
-}
-
 function startPaint(e, canvas){
     color = $('input[name="color"]:checked').val();
     paint = window[color]
@@ -286,7 +279,6 @@ function paintCanvas(e, canvas, blank){
     let x = e.pageX - canvas.offsetLeft;
     let y = e.pageY - canvas.offsetTop;
     var colors = all_colors.get(canvas);
-    //console.log('clicked ' + y + ', ' + x);
     var w, h;
     for (var i = -10; i < 10; i++){
         for (var j = -10; j < 10; j++){
@@ -303,16 +295,3 @@ function paintCanvas(e, canvas, blank){
     bodyPix.drawMask(canvas, blank, colors, opacity, 0, false);
 }
 
-function gethbRatio(data){
-    var h = 0; var b = 0;
-    for (var i = 0; i < data.length; i+=4){
-        if (data[i] == GREEN[0]){
-            b++;
-        }
-        else if (data[i] == PURPLE[0]){
-            h++;
-        }
-    }
-    if (b==0) {return 0;}
-    return h / b;
-}

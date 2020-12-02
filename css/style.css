@@ -1,15 +1,18 @@
+@import url(//fonts.googleapis.com/earlyaccess/opensanshebrew.css);
+@import url('https://fonts.googleapis.com/css2?family=Nixie+One&display=swap');
+
 body{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    font-family: 'Open Sans Hebrew', sans-serif;
 }
 
 #main-container{
     margin-top: 10vh;
     width: 600px;
     height: 600px;
-    border: 1px solid black;
     border-radius: 3px;
     text-align: center;
 }
@@ -18,15 +21,57 @@ body{
     margin-top: 50px;
 }
 
-#toggle-frame{
-    margin-left: -430px;
-    margin-top: 10px;
+#webcam{
+    position: absolute;
+}
+
+#count{
+    z-index: 5;
+    color: white;
+    position:  absolute;
+    font-size: 300px;
+}
+
+#pose{
+    position: absolute;
+    z-index: 4;
+}
+
+#output{
+    transform: rotateY(180deg);
+}
+
+#mask{
+    position: absolute;
+    z-index: 3;
+}
+
+.text{
+    font-size: 52px;
+    font-family: 'Nixie One', cursive
+}
+
+.left{
+    text-align: right;
+    margin-left: -350px;
+    margin-top: 100px;
+    width: 300px;
+    position: absolute;
+}
+
+.right{
+    text-align: left;
+    margin-left: 650px;
+    margin-top: 100px;
+    width: 300px;
+    position: absolute;
 }
 
 button{
     padding: 10px;
     background-color: lightskyblue;
-    border-radius: 10px;
-    font-size: 20px;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    border-radius:10px;
+    border: none;
+    font-size: 30px;
+    font-family: 'Open Sans Hebrew', sans-serif;
 }
