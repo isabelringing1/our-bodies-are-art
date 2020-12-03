@@ -164,9 +164,13 @@ function setup_mask(blank){
     document.getElementById('done').addEventListener('click', function(){
         query = gather_data()
         console.log("finding closest match(es) to " + query);
-        closest = knn(tree, 2, query, points);
+        closest = knn(tree, 5, query, points);
         console.log(closest)
-
+        var pieces = [];
+        for (i in closest.container){
+            pieces.push([closest.container[i].data.vp, closest.container[i].dist])
+        }
+        formatResults(pieces)
     });
 }
 
@@ -263,6 +267,14 @@ function toggleVideo(){
         renderVideoOutput(video);
     }
     console.log('stopped is ' + stopped);
+}
+
+function formatResults(pieces){
+    console.log(pieces)
+    document.getElementById('results').innerHTML = "Closest Matches:";
+    for (i in pieces){
+        document.getElementById('results').innerHTML += "<br/> Work " + pieces[i][0] + ", Distance " + pieces[i][1]
+    }
 }
 
 //use low level posenet to get 
