@@ -18,7 +18,7 @@ body{
 }
 
 #capture{
-    margin-top: 50px;
+    margin-top: 30px;
 }
 
 #webcam{
@@ -47,7 +47,7 @@ body{
 }
 
 .text{
-    font-size: 52px;
+    font-size: 36px;
     font-family: 'Nixie One', cursive
 }
 
@@ -68,9 +68,24 @@ body{
 }
 
 #results{
+    margin-top: 50px;
     font-size: 30px;
     font-family: 'Open Sans Hebrew', sans-serif;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 2px solid black;
+}
+
+.info{
+    position: absolute;
+    width: 250px;
+    font-size: 20px;
+    color: grey;
+    margin-top: 100px;
+    margin-left: 150px;
+    z-index: -1;
 }
 
 button{
@@ -78,6 +93,121 @@ button{
     background-color: lightskyblue;
     border-radius:10px;
     border: none;
-    font-size: 30px;
+    font-size: 25px;
     font-family: 'Open Sans Hebrew', sans-serif;
+}
+
+#menu {
+    position: absolute;
+    border-radius: 50px;
+    width: 180px;
+    height: 300px;
+    border: 2px solid rgb(183, 186, 189);
+    transition: 1s ease-in-out;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 20px;
+    z-index: -1;
+    display: none;
+}
+
+#menu.slide{
+    transform: translateX(-220px);
+}
+
+.color{
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+}
+
+#bg{
+    background-color: rgb(200, 200, 200)
+}
+
+#head{
+    background-color: rgb(110, 64, 170)
+}
+
+#body{
+    background-color: rgb(175, 240, 91)
+}
+
+#final-mask{
+    background-color:  rgba(120, 120, 120, 0.324);
+    font-family: 'Nixie One', cursive;
+    font-size: 40px;
+    position: absolute;
+    width:  600px;
+    height: 350px;
+    display: none;
+    z-index: 3;
+    padding-top: 250px;
+}
+
+.info-block{
+    width: 900px;
+    height: 500px;
+    display: flex;
+    justify-content: space-around;
+    padding: 40px;
+}
+
+.info-text{
+    width: 400px;
+    height: 400px;
+    border: 2px solid green;
+    text-align: left;
+}
+
+.info-title{
+    color: black;
+    font-family: 'Nixie One', cursive;
+    font-size: 40px;
+    margin: 0px 0px 20px 0px;
+}
+
+.info-subtitle{
+    color: grey;
+    font-size: 20px;
+    font-family: 'Open Sans Hebrew', sans-serif;
+    margin: 0px;
+}
+
+.info-plain{
+    color: black;
+    font-size: 16px;
+    font-family: 'Open Sans Hebrew', sans-serif;
+}
+
+.info-img{
+    width: 400px;
+    height: 400px;
+}
+
+a{
+    font-size: 16px;
+    font-family: 'Open Sans Hebrew', sans-serif;
+}
+
+.fade-in {
+    animation: fadeIn ease 3s;
+    -webkit-animation: fadeIn ease 3s;
+    -moz-animation: fadeIn ease 3s;
+}
+
+@keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+    
+@-moz-keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+    
+@-webkit-keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
 }

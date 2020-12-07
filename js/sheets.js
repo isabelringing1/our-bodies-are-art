@@ -26,7 +26,7 @@ function initClient() {
         // Handle the initial sign-in state.
         updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
         
-        document.getElementById('authorize_button').onclick = handleAuthClick;
+        //document.getElementById('authorize_button').onclick = handleAuthClick;
     }, function(error) {
         console.log(JSON.stringify(error, null, 2));
     });
@@ -56,6 +56,27 @@ function getData() {
                 //console.log(row)
             }
             set_data(range.values);
+        } else {
+            console.log('No data found.');
+        }
+    }, function(response) {
+        console.log('Error: ' + response.result.error.message);
+    });
+}
+
+function getPainting(id){
+    id+=1
+    gapi.client.sheets.spreadsheets.values.get({
+        spreadsheetId: '1rvqnL7fjsv4vF_mwV4si3RmCJ-SY4bppda1aw6ZlWOM',
+        range: 'Sheet1!A' + id + ':H' + id,
+    }).then(function(response) {
+        var range = response.result;
+        if (range.values.length > 0) {
+            for (i = 0; i < range.values.length; i++) {
+                var row = range.values[i];
+                console.log(row)
+                formatResults(row);
+            }
         } else {
             console.log('No data found.');
         }

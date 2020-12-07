@@ -1,4 +1,4 @@
-//MODIFIED from https://bl.ocks.org/d3noob/8375092
+//ADAPTED from https://bl.ocks.org/d3noob/8375092
 
 var treeData = 0
 

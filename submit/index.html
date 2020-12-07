@@ -1,0 +1,72 @@
+<head> <title>Isabel Lee Senior Project</title> </head>
+<body>
+    <h1> Our Bodies Are Art: An interactive examination of evolving female 
+        beauty standards through machine learning, computer vision, and classical art </h1>
+    <div id="bar"></div>
+    <h2> Isabel Lee, Advisor: Julie Dorsey</h2>
+    <div id="bar"></div>
+    <p> <b> Abstract: </b><br/>
+        When we examine the diverse types of bodies found in art throughout time, we better
+        understand our past standards of beauty: who and what we have exalted and immortalized.
+        By extension, we discover that there is no ‘ideal body’, as each artist and time period 
+        bring their own unique and subjective eye. This project explores this idea through an 
+        interactive web application that matches a user’s body to a number of similar figures 
+        found in classical art. First, a diverse art database of around 50 works was curated 
+        from sources like ArtStor, WikiArt, and various Museum databases like Tate and the 
+        Guggenheim. Then, the TensorFlow.js library BodyPix was applied to each image, using 
+        machine learning and computer vision to accurately segment bodies. Data was collected 
+        and standardized; then a Vantage Point tree data structure was implemented to efficiently 
+        find the k nearest neighbors for any input data. Finally, a web app was built to capture 
+        a user’s body, with the BodyPix library segmenting the image with user correction. Users 
+        are then able to explore the five closest matches from the art database and see how they 
+        compare to their own body. This proof-of-concept application lays the foundation for many 
+        promising extensions; future work may entail expanding the database and creating more 
+        curated matches by also taking into account race, age, and gender. Overall, this project 
+        allows users to engage in classical art while also reflecting on their own ideas of beauty 
+        and body image through an interactive and compelling application.
+    </p>
+    <div id="bar"></div>
+    <p> <b> Links: </b><br/>
+        <a href="isabel-senior-project.herokuapp.com">Web App</a><br/>
+        <a href='https://drive.google.com/file/d/1d6-9Xoyxpj_GUEZxzfXKH5S2plmT9rTd7kWrSJX0-q0/view'>
+        Project Proposal</a><br/>
+        <a href="https://git.yale.edu/ijl4/senior_project">Github Repo</a><br/>
+        <a href='https://drive.google.com/file/d/1YHNzm82DjMAa5YKwzSeq_hCLjXI5ca97t-K54ABf8Zs/view'>
+            Final Project Report</a> (as 
+        <a href='https://docs.google.com/document/d/1YHNzm82DjMAa5YKwzSeq_hCLjXI5ca97t-K54ABf8Zs/export?format=pdf'>
+         pdf</a>)
+     </p>
+</body>
+
+<style>
+    @import url(//fonts.googleapis.com/earlyaccess/opensanshebrew.css);
+    @import url('https://fonts.googleapis.com/css2?family=Nixie+One&display=swap');
+    body{
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        width: 100%;
+    }
+    h1{
+        font-size: 36px;
+        font-family: 'Nixie One', cursive;
+        width: 70vw;
+    }
+    h2{
+        font-size: 25px;
+        font-family: 'Nixie One', cursive;
+        width: 70vw;
+    }
+
+    p{
+        font-family: 'Open Sans Hebrew', sans-serif;
+        width: 70vw;
+        font-size: 20px;
+    }
+
+    #bar {
+        width: 70vw;
+        background-color: #9DE6FD;
+        height: 5px;
+    }
+</style>

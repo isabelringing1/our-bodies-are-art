@@ -12,6 +12,7 @@ var clickedPt = "";
 var paint = NONE;
 var tree = 0;
 var points = 0;
+var picked_color = BG;
 
 navigator.getUserMedia = navigator.getUserMedia ||
     navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -75,7 +76,7 @@ function showLoading(loading){
 function takePicture(){
     document.getElementById("capture-button").disabled = true;
     document.getElementById("view-button").disabled = true;
-    countdown()
+    countdown();
     console.log("disabled buttons");
 }
 
@@ -83,7 +84,9 @@ function countdown(){
     if (count == 0){
         console.log("click!");
         stopped = true;
+        document.getElementById("count").innerHTML = "";
         cancelAnimationFrame(req);
+        replaceText(1);
         getPose();
     }
     else{
@@ -96,6 +99,38 @@ function countdown(){
         }
         setTimeout(countdown, 1000);
     }
+}
+
+function replaceText(i){
+    left = document.getElementsByClassName('left')[0];
+    right = document.getElementsByClassName('right')[0];
+    left.classList.remove("fade-in");
+    right.classList.remove("fade-in");
+    void left.offsetWidth;
+    void right.offsetWidth;
+    if (i == 1){
+        left.style.marginTop = '50px';
+        left.innerHTML = "Move the blue dots to fit your body.\
+        <br\><br\>Pay special attention to your <b>torso</b>; place the dots in the \
+        middle of your shoulders, and on the border of your hips."
+        right.innerHTML = "You can retake the photo if you don't like it. <br\><br\>\
+        Press Done when you're finished adjusting your pose."
+    }
+    else if (i == 2){
+        left.style.marginTop = '350px';
+        left.innerHTML = "Use the palette to edit coloring of your body and your head."
+        right.innerHTML = "Don't worry about being super precise. Instead, focus on \
+        getting proportions right.  <br\><br\> Also, don't include excess hair as part \
+        of the head region."
+    }
+    else if (i == 3){
+        left.innerHTML = "";
+        right.innerHTML = "";
+        document.getElementById('final-mask').style.display = "block";
+        document.getElementById('done').style.display = "none";
+    }
+    left.classList.add("fade-in");
+    right.classList.add("fade-in");
 }
 
 async function getPose(){
@@ -128,7 +163,7 @@ async function getPose(){
     bodyPix.drawMask(canvas_mask, blank, coloredPartImage, .6, 0, true);
     colors = coloredPartImage;
     canvas_mask.style.display = "NONE";
-
+    document.getElementById('menu').style.display = "flex";
     setup_pose();
 
     document.getElementById('capture-button').style.display = "NONE"; 
@@ -148,6 +183,12 @@ function setup_pose(){
 
 function setup_mask(blank){
     console.log('setting up mask');
+    replaceText(2);
+    document.getElementById('menu').classList.add("slide");
+    setTimeout(function(){document.getElementById('menu').style.zIndex = 5;}, 1000)
+    document.getElementById('bg').addEventListener('click', function(){picked_color=BG;})
+    document.getElementById('body').addEventListener('click', function(){picked_color=GREEN;})
+    document.getElementById('head').addEventListener('click', function(){picked_color=PURPLE;})
     document.getElementById("posecanvas").style.display = "NONE";
     canvas_mask = document.getElementById("output-mask");
     canvas_mask.style.display = "";
@@ -162,7 +203,10 @@ function setup_mask(blank){
     document.getElementById('show-mask').style.display = "NONE";
     document.getElementById('done').style.display = "";
     document.getElementById('done').addEventListener('click', function(){
-        query = gather_data()
+        document.getElementById('mask').style.display = 'NONE';
+        document.getElementById('menu').style.display = 'NONE';
+        replaceText(3);
+        query = gather_data();
         console.log("finding closest match(es) to " + query);
         closest = knn(tree, 5, query, points);
         console.log(closest)
@@ -170,14 +214,18 @@ function setup_mask(blank){
         for (i in closest.container){
             pieces.push([closest.container[i].data.vp, closest.container[i].dist])
         }
-        formatResults(pieces)
+        document.getElementById('results').innerHTML = "Your Closest Matches:";
+        for (i in pieces){
+            getPainting(i);
+            //"<br/> Work " + pieces[i][0] + ", Distance " + pieces[i][1]
+        }
     });
 }
 
 function startPaint(e, canvas){
     color = 0;
-    paint = [255, 255, 255, 255];
-    console.log("painting");
+    paint = picked_color;
+    console.log("painting color " + paint);
 }
 
 function paintCanvas(e, canvas, blank){
@@ -269,12 +317,32 @@ function toggleVideo(){
     console.log('stopped is ' + stopped);
 }
 
-function formatResults(pieces){
-    console.log(pieces)
-    document.getElementById('results').innerHTML = "Closest Matches:";
-    for (i in pieces){
-        document.getElementById('results').innerHTML += "<br/> Work " + pieces[i][0] + ", Distance " + pieces[i][1]
-    }
+function formatResults(row){
+    results = document.getElementById('results');
+
+    block = document.createElement('div');
+    text = document.createElement('div');
+    img = document.createElement('img');
+    img.src = 'https://via.placeholder.com/300';
+    
+    block.classList.add('info-block');
+    text.classList.add('info-text');
+    img.classList.add('info-img');
+    
+    block.appendChild(img);
+    block.appendChild(text);
+    results.appendChild(block);
+
+    row[3] = row[3].substring(0, 400) + "...";
+    link = "<a href=" + row[7] + "> Learn More </a>" 
+    
+    text.innerHTML = "<p class='info-title'>" + row[0] + "</p>" + //title
+    "<p class='info-subtitle'>" + row[1] + "<br/>" + row[2] + ", " + row[6] +  //artist | year, medium
+    "<br/>Country: " + row[5] + ", Movement: " + row[4] + "</p>" //country, movement 
+    +  "<p class='info-plain'>" + row[3] + "</p>" +
+    "<p>" + link + "</p>"; //learn more link
+    
+    
 }
 
 //use low level posenet to get 

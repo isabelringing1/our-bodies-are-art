@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Art Bod</title>
+        <title>Our Bodies Are Art</title>
         <script src="js/util.js"></script>
         <script src="js/pose.js"></script>
+        <script src="js/sheets.js"></script>
         <script src="js/pqueue.js"></script>
         <script src="js/match.js"></script>
         <script src="js/main.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
+        <script async defer src="https://apis.google.com/js/api.js"
+            onload="this.onload=function(){};handleClientLoad()"
+            onreadystatechange="if (this.readyState === 'complete') this.onload()">
+        </script>
         <!-- Load BodyPix -->
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.0"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -17,19 +22,35 @@
 
     <body>
         <div id="main-container">
+            <div id="final-mask">
+                Scroll to see your matches below! <br><br>
+                ↓ 
+            </div>
             <div id="webcam">
                 <video id="video" style="display: none;"></video>
                 <canvas id="output"/>
             </div>
+            <div class="info">
+                (can't see anything? try allowing this site access to your camera or
+                closing other applications that might use it, then refresh the page.)
+            </div>
+            <div id="mask"><canvas id="output-mask"/> </div>
+            <div id="pose"><canvas id="posecanvas"/></div>  
             <div class="text">
-                <div class="left"> Pressing ‘Start’ will activate a 5 second timer. </div>
-                <div class="right"> Align your whole body in the viewport for best results. </div>
+                <div id="menu"> 
+                    <div class="color" id="bg"></div>
+                    Background
+                    <div class="color" id="head"></div>
+                    Head
+                    <div class="color" id="body"></div>
+                    Body
+                </div>
+                <div class="left"> 
+                    Pressing ‘Start’ will activate a 5 second timer, and then a reference picture will be taken. </div>
+                <div class="right"> For best results, find an open space and try to capture your full body. </div>
             </div>
         </div>
-        <div id="count"></div> 
-        <div id="pose"> <canvas id="posecanvas"/></div>  
-        <div id="mask"><canvas id="output-mask"/> </div>
-
+        <div id="count"></div>
         <div id="capture"> 
             <button id="capture-button"> 
                 Capture
@@ -38,7 +59,7 @@
                 Turn off video
             </button>
             <button id="show-mask" style='display:none'> 
-                Done Adjusting Pose
+                Done
             </button>
             <button id="done" style='display:none'> 
                 Match me
