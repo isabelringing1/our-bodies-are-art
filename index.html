@@ -18,9 +18,20 @@
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.0"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link rel="stylesheet" typ="text/css" href="css/style.css">
+
+       <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-W83T59F6F1"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-W83T59F6F1');
+        </script>
     </head>
 
     <body>
+        <div id="title">Our Bodies Are Art</div>
         <div id="main-container">
             <div id="final-mask">
                 Scroll to see your matches below! <br><br>
@@ -55,7 +66,7 @@
             <button id="capture-button"> 
                 Capture
             </button>
-            <button id="view-button"> 
+            <button id="view-button" style="display:none"> 
                 Turn off video
             </button>
             <button id="show-mask" style='display:none'> 
@@ -66,5 +77,34 @@
             </button>
         </div>
         <div id = "results"></div>
+
+        <div id="modal">
+            <h1 style="margin-bottom:0px; ">Our Bodies Are Art </h1> 
+            <h2>An interactive examination of evolving female beauty standards through machine learning, computer vision, and classical art</h2>
+            <div class="bar"></div>
+            <h2 style="margin-bottom:0px">Welcome! </h2> 
+            <p style="width: 70vw;"> What (and who) humans have exalted is an 
+                ever-changing standard. Artists help us understand this fluidity by immortalizing what 
+                their societies considered most beautiful. 
+                <br/><br/>
+                <b>Our Bodies Are Art</b> aims to give perspective on the breadth of body types found in art, 
+                and to show users how they are represented in this bigger picture.
+                This application will take a photo of you, compare your body proportions against pieces in an art 
+                database, and surface your closest matches. It is designed for female-identifying users, but
+                will work for anyone. <br/><br/>
+
+                This site is made by <a style="font-size:20px" href="http://isabellee.me">Isabel Lee</a> 
+                as her Senior Project under advisor Julie Dorsey. It was built using the TensorFlow.js library
+                <a style="font-size:20px" href="https://github.com/tensorflow/tfjs-models/tree/master/body-pix">BodyPix</a>.
+            </p>
+            <h2 style="margin-bottom:0px">How do I use this?</h2>
+            <p style="width: 70vw;"> Click the button below to start the application. You must first allow access
+                to your webcam, and then text prompts will direct you through capturing and 
+                preparing your image. Have fun! </p>
+            <button style="margin-top:20px" id="hide-modal"> 
+                Get Started
+            </button>
+
+        </div>
     </body>
 </html>

@@ -323,7 +323,7 @@ function formatResults(row){
     block = document.createElement('div');
     text = document.createElement('div');
     img = document.createElement('img');
-    img.src = 'https://via.placeholder.com/300';
+    img.src = row[8];
     
     block.classList.add('info-block');
     text.classList.add('info-text');
@@ -360,20 +360,28 @@ document.addEventListener("DOMContentLoaded", async function(){
         }
         console.log(points)
     });
+    document.getElementById("hide-modal").addEventListener("click", async function(){
+        document.getElementById("modal").style.opacity = 0;
+        document.getElementById("modal").style.zIndex = -10;
+        if (video!=0) return;
+        try {
+            video = await loadVideo();
+          } catch (e) {
+              console.log('this browser does not support video capture,' +
+              'or this device does not have a camera')
+            throw e;
+        }
+        renderVideoOutput(video);
+    });
     showLoading(true);
     bodypixnet = await bodyPix.load({architecture: 'MobileNetV1'});
     showLoading(false);
     document.getElementById("capture-button").addEventListener("click", takePicture);
     document.getElementById("view-button").addEventListener("click", toggleVideo);
-
-    try {
-        video = await loadVideo();
-      } catch (e) {
-          console.log('this browser does not support video capture,' +
-          'or this device does not have a camera')
-        throw e;
-      }
-    renderVideoOutput(video);
+    document.getElementById("title").addEventListener("click", function(){
+        document.getElementById("modal").style.zIndex = 10;
+        document.getElementById("modal").style.opacity = 1;
+    });
 });
 
 

@@ -68,7 +68,7 @@ function getPainting(id){
     id+=1
     gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId: '1rvqnL7fjsv4vF_mwV4si3RmCJ-SY4bppda1aw6ZlWOM',
-        range: 'Sheet1!A' + id + ':H' + id,
+        range: 'Sheet1!A' + id + ':I' + id,
     }).then(function(response) {
         var range = response.result;
         if (range.values.length > 0) {
