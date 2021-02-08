@@ -217,7 +217,7 @@ a{
     height: 100vh;
     background-color: white;
     z-index: 10;
-    margin: 10vw;
+    padding: 10vh 10vw 0vh 10vw;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -246,6 +246,7 @@ p{
     width: 70vw;
     background-color: #9DE6FD;
     height: 5px;
+    color: white;
 }
 
 @keyframes fadeIn {

@@ -34,7 +34,7 @@ function initClient() {
 
 
 function updateSigninStatus(isSignedIn) {
-    if (!isSignedIn) {
+    if (!isSignedIn && document.getElementById('authorize_button')) {
         document.getElementById('authorize_button').style.display = 'block';
     }
 }
